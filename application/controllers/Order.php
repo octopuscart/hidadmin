@@ -516,6 +516,16 @@ class Order extends CI_Controller {
         $this->Order_model->order_pdf($order_id);
     }
 
+    function order_pdf_order_key($order_key) {
+        $order_details = $this->Order_model->getOrderDetailsV2($order_key, 'key');
+        if ($order_details) {
+            $order_id = $order_details['order_data']->id;
+            $this->Order_model->order_pdf($order_id);
+        } else {
+            redirect(SITE_URL);
+        }
+    }
+
     function order_pdf_worker($order_id) {
         $this->Order_model->order_pdf_worker($order_id);
     }
@@ -792,7 +802,7 @@ class Order extends CI_Controller {
 //        $date1 = date('Y-m-') . "01";
         $date1 = date('Y-m-d');
 
-        $date2 = date('Y-m-d', strtotime('+30 days', strtotime($date1)));
+        $date2 = date('Y-m-d');
 
         if (isset($_GET['daterange'])) {
             $daterange = $this->input->get('daterange');
