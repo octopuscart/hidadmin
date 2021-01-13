@@ -165,7 +165,7 @@ $this->load->view('layout/topmenu');
                                                 <input type="text" id="template-contactform-name" name="name" value="" class="form-control border-form-control required" placeholder="Name" required="">
                                             </div>
                                             <div class="col-sm-4 mb-3">
-                                                <input type="email" id="template-contactform-email" name="email" value="" class="required email form-control border-form-control" placeholder="Email Address" required="">
+                                                <input type="email" id="template-contactform-email" name="email" value="" class="required email form-control border-form-control" placeholder="Email Address" >
                                             </div>
                                             <div class="clear"></div>
                                             <div class="col-sm-4 mb-3">
