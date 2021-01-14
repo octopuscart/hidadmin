@@ -45,134 +45,105 @@ class Order extends CI_Controller {
 
     public function index() {
 
-        $date1 = date('Y-m-') . "01";
+         $date1 = date('Y-m-d', strtotime('-30 days'));
         $date2 = date('Y-m-d');
 
-        $data = array();
-        $blog_data = $this->Curd_model->get('style_tips', 'desc');
-        $data['blog_data'] = $blog_data;
-
-        $this->db->order_by('id', 'desc');
-        $this->db->where('order_date between "' . $date1 . '" and "' . $date2 . '"');
-        $query = $this->db->get('user_order');
-
-        $orderlist = $query->result();
-        $orderslistr = [];
-        foreach ($orderlist as $key => $value) {
-            $this->db->order_by('id', 'desc');
-            $this->db->where('order_id', $value->id);
-            $query = $this->db->get('user_order_status');
-            $status = $query->row();
-            $value->status = $status ? $status->status : $value->status;
-            $value->status_datetime = $status ? $status->c_date . " " . $status->c_time : $value->order_date . " " . $value->order_time;
-            $this->db->order_by('id', 'desc');
-            $this->db->where('order_id', $value->id);
-            $query = $this->db->get('cart');
-            $cartdata = $query->result();
-            $tempdata = array();
-            $itemarray = array();
-
-            array_push($orderslistr, $value);
-        }
-        $data['orderslist'] = $orderslistr;
-
-
-        $data['exportdata'] = 'no';
         if ($this->user_type != 'Admin') {
             redirect('UserManager/not_granted');
         }
-        $date1 = date('Y-m-') . "01";
-        $date2 = date('Y-m-d');
-        if (isset($_GET['daterange'])) {
-            $daterange = $this->input->get('daterange');
-            $datelist = explode(" to ", $daterange);
-            $date1 = $datelist[0];
-            $date2 = $datelist[1];
-        }
-        $daterange = $date1 . " to " . $date2;
-        $data['daterange'] = $daterange;
+
+        $data = array();
+
+        //order list            
         $this->db->order_by('id', 'desc');
         $this->db->where('order_date between "' . $date1 . '" and "' . $date2 . '"');
         $query = $this->db->get('user_order');
-        $orderlist = $query->result_array();
+        $orderlist = $query->result();
         $orderslistr = [];
-        $total_amount = 0;
         foreach ($orderlist as $key => $value) {
-            $this->db->order_by('id', 'desc');
-            $this->db->where('order_id', $value['id']);
-            $total_amount += $value['total_price'];
-            $query = $this->db->get('user_order_status');
-            $status = $query->row();
-            $value['status'] = $status ? $status->status : $value['status'];
+            $value->status_datetime = $value->order_date . " " . $value->order_time;
             array_push($orderslistr, $value);
         }
-        $data['total_amount'] = $total_amount;
+        $data['orderslist'] = $orderslistr;
+        //end of order list
+        //order count
+        $this->db->select('count(id) as order_count');
+        $query = $this->db->get('user_order');
+        $ordercount = $query->row();
+        $data['total_order'] = $ordercount->order_count;
 
+        //booking count
+        $this->db->select('count(id) as order_count');
+        $query = $this->db->get('booking_order');
+        $ordercount = $query->row();
+        $data['total_booking'] = $ordercount->order_count;
 
-
-        $this->db->order_by('id', 'desc');
-
+        //user count            
+        $this->db->select('count(id) as total_users');
         $query = $this->db->get('admin_users');
-        $userlist = $query->result_array();
+        $userlist = $query->row();
+        $data['total_users'] = $userlist->total_users;
 
-        $this->db->order_by('c.id', 'desc');
-        $query = $this->db->from('cart as c');
-        $this->db->join('user_order as uo', 'uo.id = c.order_id');
-        $this->db->where('c.order_id > 0');
-        $this->db->where('uo.order_date between "' . $date1 . '" and "' . $date2 . '"');
-        $query = $this->db->get();
-        $vendororderlist = $query->result_array();
+        //visitore count
+        $this->db->select('count(id) as total_users');
+        $query = $this->db->get('ci_sessions');
+        $userlist = $query->row();
+        $data['total_visitor'] = $userlist->total_users;
 
-
-        $data['vendor_orders'] = count($vendororderlist);
-        $data['total_order'] = count($orderslistr);
-        $data['total_users'] = count($userlist);
-
-        $this->load->library('JsonSorting', $orderslistr);
-        $orderstatus = $this->jsonsorting->collect_data('status');
-        $orderuser = $this->jsonsorting->collect_data('name');
-        $orderdate = $this->jsonsorting->collect_data('order_date');
-        $data['orderstatus'] = $orderstatus;
-        $data['orderuser'] = $orderuser;
-        $data['orderdate'] = $orderdate;
-
-
-
-
-//order graph date
-        $dategraphdata = $this->date_graph_data($date1, $date2, $orderdate);
-        $data['order_date_graph'] = $dategraphdata;
-
-
-        $amount_date = $this->jsonsorting->data_combination_quantity('total_price', 'order_date');
-
-        $salesgraph = array();
-
-        foreach ($dategraphdata as $key => $value) {
-            $salesgraph[$key] = 0;
-            if (isset($amount_date[$key])) {
-                $salesgraph[$key] = $amount_date[$key];
-            }
-        }
-
-        $data['salesgraph'] = $salesgraph;
-
-
-
+        //lastest users            
         $this->db->order_by('id', 'desc');
-        $this->db->limit(10);
+        $this->db->limit(12);
         $query = $this->db->get('admin_users');
-        $systemlog = $query->result_array();
+        $lastestuser = $query->result_array();
+        $data['latestusers'] = $lastestuser;
 
-        $data['latestusers'] = $systemlog;
-
-
+        //system log            
         $this->db->order_by('id', 'desc');
         $this->db->limit(10);
         $query = $this->db->get('system_log');
         $systemlog = $query->result_array();
-
         $data['systemlog'] = $systemlog;
+
+        //booking future data;
+        $date1 = date('Y-m-d', strtotime('+30 days'));
+        $date2 = date('Y-m-d', strtotime('-30 days'));
+        $cdate = date("Y-m-d");
+        $queryraw = "SELECT select_date, name, contact, email, select_time, if('$cdate'<=select_date,'n','p') as date_stats  FROM booking_order where select_date between '$date2' and '$date1' group by select_date order by select_date desc";
+        $queryraw2 = $this->db->query($queryraw);
+        $booking_dates = $queryraw2->result_array();
+        $data['future_booking'] = $booking_dates;
+
+        //booking graph
+        $date1 = date('Y-m-d', strtotime('-30 days'));
+        $date2 = date('Y-m-d');
+        $queryraw = "SELECT select_date, count(id) as count FROM booking_order where select_date between '$date1' and '$date2' group by select_date order by select_date desc";
+        $queryraw2 = $this->db->query($queryraw);
+        $booking_dates = $queryraw2->result_array();
+        $booking_dates_array = array();
+        foreach ($booking_dates as $key => $value) {
+            $booking_dates_array[$value['select_date']] = $value['count'];
+        }
+
+        //order datess
+        $queryrawo = "SELECT order_date, count(id) as count FROM user_order where order_date between '$date1' and '$date2' group by order_date order by order_date desc";
+        $queryrawo2 = $this->db->query($queryrawo);
+        $order_dates = $queryrawo2->result_array();
+        $order_dates_array = array();
+        foreach ($order_dates as $key => $value) {
+            $order_dates_array[$value['order_date']] = $value['count'];
+        }
+
+        $listofdates = array();
+        for ($i = 30; $i >= 0; $i--) {
+            $tdate = date('Y-m-d', strtotime("-$i days"));
+            $listofdates[$tdate] = array(
+                "order" => isset($order_dates_array[$tdate]) ? $order_dates_array[$tdate] : 0,
+                "booking" => isset($booking_dates_array[$tdate]) ? $booking_dates_array[$tdate] : 0
+            );
+        }
+
+        $data['order_booking_date_list'] = $listofdates;
+
 
 
         $this->load->view('Order/dashboard', $data);
