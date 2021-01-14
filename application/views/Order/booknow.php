@@ -191,9 +191,9 @@ $this->load->view('layout/topmenu');
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <select id="template-contactform-people" class="custom-select form-control border-form-control" name="people" required="">
-                                            <option value="disabled" disabled="" selected=""  >Person</option>
+                                            <option value="disabled" disabled=""  >Person</option>
                                             <option value="1">1</option>
-                                            <option value="2">2</option>
+                                            <option value="2" selected="">2</option>
                                             <option value="3">3</option>
                                             <option value="4">4</option>
                                             <option value="5">5</option>
