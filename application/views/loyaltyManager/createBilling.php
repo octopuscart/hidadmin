@@ -59,6 +59,10 @@ $this->load->view('layout/topmenu');
 
 
     }
+    
+    .opacity_05{
+            opacity: 0.5;
+    }
 </style>
 
 
@@ -179,18 +183,18 @@ $this->load->view('layout/topmenu');
                                     </tr>
                                     <tr>
                                         <td>    
-                                            <h3>{{billing.total_amount| currency}}</h3>
+                                            <h3 class="opacity_05">{{billing.total_amount| currency}}</h3>
                                         </td>
                                         <td>
-                                            <h3>{{billing.slot.off_percent}}%</h3>
+                                            <h3 class="opacity_05">{{billing.slot.off_percent}}%</h3>
                                         </td>
                                         <td >
-                                            <h3>{{billing.reimburse_amount| currency}}</h3>
+                                            <h3 class="">{{billing.reimburse_amount| currency}}</h3>
                                         </td>
                                     </tr>
                                     <tr>
                                       
-                                        <td colspan="3" style="font-size: 10px;text-align: right;">
+                                        <td colspan="3" style="font-size: 10px;text-align: right;color:black;">
                                             {{billing.off_amount| currency}} (Off On Order) + {{billing.wallet_amount| currency}} (Wallet)
                                         </td>
                                     </tr>
