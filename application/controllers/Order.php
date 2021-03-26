@@ -766,6 +766,50 @@ class Order extends CI_Controller {
         }
         $this->load->view('Order/booknow', $data);
     }
+    
+      public function bookedit($bookid) {
+        $data = array();
+        $data['submitdata'] = "";
+        $this->db->where('id', $bookid);
+        $query = $this->db->get('booking_order');
+        $orderdetails = $query->row();
+        if ($orderdetails) {
+            $data['bookdetails'] = $orderdetails;
+        } else {
+            redirect('Order/bookinglist');
+        }
+        if (isset($_POST['booknow'])) {
+            $booking_order = array(
+                'name' => strtoupper($this->input->post('name')),
+                'email' => $this->input->post('email'),
+                'contact' => $this->input->post('contact'),
+                'select_date' => $this->input->post('select_date'),
+                'select_time' => $this->input->post('select_time'),
+                'people' => $this->input->post('people'),
+                'datetime' => date("Y-m-d H:i:s a"),
+                'order_source' => $this->input->post('order_source'),
+                'extra_remark' => $this->input->post('extra_remark'),
+                'booking_type' => 'Admin Panel',
+                'select_table' => '',
+                'status' => "Active",
+            );
+            $this->db->where('id', $bookid);
+            $this->db->update('booking_order', $booking_order);
+            $last_id = $this->db->insert_id();
+            $oderid = $last_id;
+            $ordertype = $this->input->post('order_source');
+            $orderlog = array(
+                'log_type' => "Reservation Update #" . $last_id,
+                'log_datetime' => date('Y-m-d H:i:s'),
+                'user_id' => "",
+                'order_id' => $last_id,
+                'log_detail' => "Booking No. #$last_id  $ordertype From Admin Panel",
+            );
+            $this->db->insert('system_log', $orderlog);
+            redirect("Order/bookedit/" . $bookid);
+        }
+        $this->load->view('Order/booknow_edit', $data);
+    }
 
     public function bookinglist() {
         $data = array();

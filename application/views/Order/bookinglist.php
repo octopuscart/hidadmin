@@ -153,6 +153,10 @@ $this->load->view('layout/topmenu');
                                             echo $value->extra_remark . "<br/>";
                                             ?>
                                         </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-danger" href="<?php echo site_url('Order/bookedit/'. $value->id);?>">Edit</a>
+                                            
+                                        </td>
                                     </tr>
                                     <?php
                                     $count++;
