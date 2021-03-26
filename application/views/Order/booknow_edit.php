@@ -166,34 +166,36 @@ $this->load->view('layout/topmenu');
                                         <input type="text" id="template-contactform-name" name="name" value="<?php echo $bookdetails->name; ?>" class="form-control border-form-control required" placeholder="Name" required="">
                                     </div>
                                     <div class="col-sm-4 mb-3">
-                                         <lable>Email</lable>
+                                        <lable>Email</lable>
                                         <input type="email" id="template-contactform-email" name="email" value="<?php echo $bookdetails->email; ?>" class="required email form-control border-form-control" placeholder="Email Address" required="">
                                     </div>
                                     <div class="clear"></div>
                                     <div class="col-sm-4 mb-3">
-                                         <lable>Contact No.</lable>
+                                        <lable>Contact No.</lable>
                                         <input type="text" id="template-contactform-phone" name="contact" value="<?php echo $bookdetails->contact; ?>" class="form-control border-form-control required" placeholder="Contact No." required="">
                                     </div>
                                     <div class="col-sm-6 mb-3 input-daterange travel-date-group">
-                                         <lable>Select Date</lable>
-                                        <input type="date" id="select_date" name="select_date" value="" class="form-control border-form-control  required" placeholder="Select Reservation Date" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $bookdetails->select_date; ?>" required="">
+                                        <lable>Select Date</lable>
+                                        <input type="date" id="select_date" name="select_date" value="" class="form-control border-form-control  required" placeholder="Select Reservation Date" value="<?php echo $bookdetails->select_date; ?>" required="">
                                     </div>
                                     <div class="clear"></div>
                                     <div class="col-md-6 mb-3">
-                                         <lable>Select Time</lable>
+                                        <lable>Select Time</lable>
                                         <select id="idselecttime" class="custom-select form-control border-form-control" name="select_time" required="">
                                             <option value="-"  selected="">Select Time</option>
-                                            <option value="12:00">12:00 - 13:00</option>
-                                            <option value="13:00">13:00 - 14:00</option>
-                                            <option value="14:00">14:00 - 15:00</option>
-                                            <option value="18:00">18:00 - 19:00</option>
-                                            <option value="19:00">19:00 - 20:00</option>
-                                            <option value="20:00">20:00 - 21:00</option>
-                                            <option value="21:00">21:00 - 22:00</option>
+                                            <?php
+                                            $timelist = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+                                            foreach ($timelist as $key => $value) {
+                                                ?>
+                                                <option value="<?php echo $value . ":00" ?>"><?php echo $value . ":00" ?> - <?php echo $value . ":30" ?></option>
+                                                <option value="<?php echo $value . ":30" ?>"><?php echo $value . ":30" ?> - <?php echo ($value + 1) . ":00" ?></option>
+                                                <?php
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                         <lable>Person</lable>
+                                        <lable>Person</lable>
                                         <select id="idselectperson" class="custom-select form-control border-form-control" name="people" required="">
                                             <option value="-"  >Person</option>
                                             <option value="1">1</option>
@@ -208,7 +210,7 @@ $this->load->view('layout/topmenu');
 
 
                                     <div class="col-md-6 mb-3">
-                                         <lable>Booking Source</lable>
+                                        <lable>Booking Source</lable>
                                         <select id="idsource" class="custom-select form-control border-form-control" name="order_source" required="">
                                             <option value="-">Select Source</option>
                                             <option value="Quandoo">Quandoo</option>
@@ -221,7 +223,7 @@ $this->load->view('layout/topmenu');
                                         </select>
                                     </div>
                                     <div class="col-sm-12 mb-3">
-                                         <lable>Extra Remark</lable>
+                                        <lable>Extra Remark</lable>
                                         <textarea id="template-contactform-phone" name="extra_remark" value="" class="form-control border-form-control required" placeholder="Remark" ><?php echo $bookdetails->extra_remark; ?></textarea>
                                     </div>
 

@@ -791,7 +791,7 @@ class Order extends CI_Controller {
                 'extra_remark' => $this->input->post('extra_remark'),
                 'booking_type' => 'Admin Panel',
                 'select_table' => '',
-                'status' => "Active",
+//                'status' => "Active",
             );
             $this->db->where('id', $bookid);
             $this->db->update('booking_order', $booking_order);
